@@ -25,8 +25,8 @@ def orb(r, n1, n2=None, n3=None, coeff1=1., coeff2=1., coeff3=1., r0=1.0):
     # компонент
 
 
-# данная функция нужна, чтобы сделать название орбитали
-# нам нужны только степени угловой компоненты (n) и коэффициент перед ней
+# Данная функция нужна, чтобы создать название орбитали. Требуются только
+# степени угловой компоненты (n) и коэффициент перед ней.
 def pow_to_name(n, coeff=1.):
     function_name = ""
 
@@ -77,3 +77,61 @@ def pow_to_name(n, coeff=1.):
             function_name += "%i" % (n[2])
 
     return function_name
+
+
+def metropolis():
+    # We start iterations using the Metropolis algorithm
+    for nstep in range(0, args.NumSteps):
+        # генерируем новую точку, приписывая случайное смещение к нынешнему
+        # положению в пространстве
+        trial_r = current_r + np.random.uniform(low=-args.MaxStep,
+                                                high=args.MaxStep,
+                                                size=3)
+        # считаем значение орбитали в этой точке
+        trial_orb_p = orb(r=trial_r, n1=n_pow1, n2=n_pow2, n3=n_pow3,
+                          coeff1=args.c1,
+                          coeff2=args.c2, coeff3=args.c3, r0=args.R0)
+        # выбрасываем вероятность принятия новой точки
+        p_trial = np.random.uniform(low=0, high=1)
+
+        # а здесь мы сохраним значение того, примем ли мы новую точку, или нет
+        do_we_accept = False
+
+        # сначала просто проверим, что новая вероятность (квадрат орбитали)
+        # выше, чем была, и если да, то принимаем точку
+        if trial_orb_p ** 2 > current_orb_p ** 2:
+            do_we_accept = True
+        else:
+            # если вероятность новой точки ниже, сравниваем вероятность перехода
+            # в эту точку с вероятностью принятия
+            if trial_orb_p ** 2 / current_orb_p ** 2 > p_trial:
+                do_we_accept = True
+
+        # если новую точку принимаем, то она становится новым значенем точки в
+        # траектории, а ещё увеличиваем число принятых точек
+        if do_we_accept:
+            current_r = trial_r
+            current_orb_p = trial_orb_p
+            acc_rate += 1
+            shift = np.zeros(
+                current_r.shape)  # в этом случае сдвиг никакой нам не нужен
+        else:
+            # если точку не приняли, чтобы было не очень уныло, сохраним
+            # значение старой точки с некоторым малым случайным сдвигом
+            shift = np.random.uniform(low=-args.MaxSmallShift,
+                                      high=args.MaxSmallShift, size=3)
+
+        # и если часть игнорирования траектории закончилась, то сохраняем новое
+        # значение
+        if nstep > int(args.NumSteps * args.PartToIgnore):
+            outf.write(" %15.10f %15.10f %15.10f " % tuple(current_r + shift))
+            outf.write("  %15.5e   %10i\n" % (current_orb_p, nstep))
+            outf.flush()
+
+    # в конце выдаём процент принятых точек в траекторию (хотелось бы, чтобы оно
+    # было в районе 20-60 %)
+    outf.close()
+    return print(
+        "Acc rate = %15.10f %%" % (
+                100. * float(acc_rate) / float(args.NumSteps)))
+    outf.close()
