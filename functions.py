@@ -1,15 +1,21 @@
 import numpy as np
 
 
-# Эта функция даёт значение "орбитали" в некоторой точке пространства
-# Орбиталь является суммой трёх угловых компонент с тремя коэффициентами,
-# домноженной на единую радиальную компоненту. r  -- это трёхмерный вектор,
-# расположение электрона в пространстве n1,n2,n3 -- это трёхмерный вектор
-# степеней x,y,z компонент вектора в угловой части каждой из трёх компонент
-# coeff1,coeff2,coeff3 -- это собственно коэффициенты перед угловыми
-# компонентами r0 -- это "размер" радиальной части, даваемой выражением exp(
-# -|r|/r0)
 def orb(r, n1, n2=None, n3=None, coeff1=1., coeff2=1., coeff3=1., r0=1.0):
+    """This function gives the value of the "orbital" at some point in
+    space. An orbital is the sum of three angular components with three
+    coefficients multiplied by a single radial component.
+
+    r is a three-dimensional vector, the location of an electron in space.
+
+    n1, n2, n3 is a 3D vector of x, y, z powers.
+
+    The vector component in the angular part of each of the three components
+
+    coeff1, coeff2, coeff3 are the coefficients in front of the corner
+    components.
+
+    r0 is the "size" of the radial part given by exp(-|r|/r0)."""
     # считаем значение угловой компоненты Ang
     ang = coeff1 * np.prod(np.power(r, n1))
     if not n2 is None:
@@ -80,7 +86,7 @@ def pow_to_name(n, coeff=1.):
 
 
 def metropolis():
-    # We start iterations using the Metropolis algorithm
+    """We start iterations using the Metropolis algorithm"""
     for nstep in range(0, args.NumSteps):
         # генерируем новую точку, приписывая случайное смещение к нынешнему
         # положению в пространстве

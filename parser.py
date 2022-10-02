@@ -1,4 +1,4 @@
-# argument parser to get options from command line
+"""Argument parser to get options from command line"""
 import argparse
 
 parser = argparse.ArgumentParser(
