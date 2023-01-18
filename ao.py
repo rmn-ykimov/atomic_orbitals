@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.colors import LightSource
 
-# Define the grid
-r = np.linspace(0, 5, 100)
-theta = np.linspace(0, 2*np.pi, 100)
+# Define the grid with fewer data points
+r = np.linspace(0, 5, 50)
+theta = np.linspace(0, 2*np.pi, 50)
 R, THETA = np.meshgrid(r, theta)
 
 # Define the exact mathematical function for the s-orbital
