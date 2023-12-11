@@ -38,8 +38,12 @@ def create_3d_plot(R, THETA, Z, colors, size=PLOT_SIZE):
     plt.show()
 
 
-# Main execution
-r = np.linspace(0, 5, NUM_POINTS)
-R, THETA, Z = s_orbital_function(r)
-colors = setup_lighting(Z)
-create_3d_plot(R, THETA, Z, colors)
+def main():
+    r = np.linspace(0, 5, NUM_POINTS)
+    R, THETA, Z = s_orbital_function(r)
+    colors = setup_lighting(Z)
+    create_3d_plot(R, THETA, Z, colors)
+
+
+if __name__ == "__main__":
+    main()
